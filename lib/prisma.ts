@@ -2,12 +2,11 @@
 import { PrismaClient } from '@prisma/client';
 
 declare global {
-    // to avoid multiple instances in dev HMR
     // @ts-ignore
     var prisma: PrismaClient | undefined;
 }
 
-export const prisma =
+export const prisma: PrismaClient =
     global.prisma ||
     new PrismaClient({
         log: ['query'],
