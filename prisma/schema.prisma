@@ -7,12 +7,62 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model user {
+model User {
+  id           Int        @id @default(autoincrement())
+  username     String     @unique(map: "User_username_key")
+  password     String
+  email        String     @unique(map: "User_email_key")
+  role         String?
+  channelUrl String?
+  createdAt    DateTime   @default(now())
+  updatedAt    DateTime   @default(now())
+
+  // relations
+  messages     Message[]
+  orders       Order[]
+}
+
+enum MessageSource {
+  telegram
+  instagram
+  eitaa
+  whatsapp
+}
+
+
+model Message {
   id        Int      @id @default(autoincrement())
-  username  String   @unique(map: "User_username_key")
-  password  String
-  email     String   @unique(map: "User_email_key")
-  role      String?
+  user      User?    @relation(fields: [userId], references: [id])
+  userId    Int?
+  source    MessageSource?
+  content   String
   createdAt DateTime @default(now())
-  updatedAt DateTime @default(now())
+}
+
+enum OrderStatus {
+  pending
+  completed
+  canceled
+}
+
+model Order {
+  id        Int         @id @default(autoincrement())
+  user      User        @relation(fields: [userId], references: [id])
+  userId    Int
+  total     Float
+  discount  Float?
+  status    OrderStatus?
+  createdAt DateTime    @default(now())
+
+  // relations
+  items     OrderItem[]
+}
+
+model OrderItem {
+  id       Int     @id @default(autoincrement())
+  order    Order   @relation(fields: [orderId], references: [id])
+  orderId  Int
+  name     String
+  quantity Int
+  price    Float
 }

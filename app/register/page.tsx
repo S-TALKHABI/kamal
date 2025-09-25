@@ -7,6 +7,7 @@ export default function RegisterPage() {
     const [username, setUsername] = useState('');
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
+    const [channelUrl, setChannelUrl] = useState('');
     const [err, setErr] = useState('');
     const router = useRouter();
 
@@ -16,13 +17,13 @@ export default function RegisterPage() {
         const res = await fetch('/api/auth/register', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ username, email, password }),
+            body: JSON.stringify({ username, email, password, channelUrl }),
         });
         if (res.ok) {
             router.push('/dashboard');
         } else {
             const data = await res.json();
-            setErr(data.error || 'خطا');
+            setErr(data.error || 'error');
         }
     }
 
@@ -58,6 +59,15 @@ export default function RegisterPage() {
                     onChange={(e) => setPassword(e.target.value)}
                     placeholder="Password"
                     type="password"
+                    className="w-full px-4 py-2 border border-gray-300 rounded
+                     focus:outline-none focus:ring-2 focus:ring-blue-500
+                     text-gray-900 placeholder-gray-400 [color-scheme:light]"
+                />
+
+                <input
+                    value={channelUrl}
+                    onChange={(e) => setChannelUrl(e.target.value)}
+                    placeholder="channelUrl"
                     className="w-full px-4 py-2 border border-gray-300 rounded
                      focus:outline-none focus:ring-2 focus:ring-blue-500
                      text-gray-900 placeholder-gray-400 [color-scheme:light]"
